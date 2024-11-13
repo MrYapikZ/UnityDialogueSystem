@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using NUnit.Framework;
 using UnityEngine;
 
-namespace FloxyDev
+namespace FloxyDev.DialogueSystem
 {
     [CreateAssetMenu(menuName = "Dialogue/DialogueSettings")]
     public class DialogueSettings : ScriptableObject
@@ -12,6 +11,8 @@ namespace FloxyDev
         public string[] actorNames;
 
         public List<ExpressionData> expressionData;
+
+        public CameraModifier cameraModifier;
 
         private void Awake()
         {
@@ -32,5 +33,12 @@ namespace FloxyDev
         [Dropdown(DropdownType.Actor)] public string selectedActor;
         public float frameRate;
         public List<Sprite> expressionSprite;
+    }
+
+    [Serializable]
+    public struct CameraModifier
+    {
+        [Header("Shake Settings")] public float shakeAmplitude;
+        public float shakeFrequency;
     }
 }

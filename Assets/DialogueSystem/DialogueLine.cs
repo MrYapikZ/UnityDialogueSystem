@@ -1,41 +1,83 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
+using UnityEngine.Serialization;
 
-namespace FloxyDev
+namespace FloxyDev.DialogueSystem
 {
     [Serializable]
     public class DialogueLine
     {
-        public int nodeID;
+        public DLNodeLink nodeLink;
+        public DLTextEvent textEvent;
+        public DLActionEvent actionEvent;
+        public DLuiEvent ui;
+    }
+
+    [Serializable]
+    public struct DLNodeLink
+    {
+        [Header("Node Links")] public int nodeID;
+        public List<DialogueChoice> choices;
+        public int nextNodeID;
+    }
+
+    [Serializable]
+    public struct DLTextEvent
+    {
         [Header("TextEvent")] public bool isTextEvent;
+        [Dropdown(DropdownType.Actor)] public string characterSpeaker;
         [TextArea(3, 5)] public string dialogueText;
+        [Tooltip("Optional")] public AudioClip voiceClip;
+    }
 
-        [Dropdown(DropdownType.Actor)] public string selectedActor;
+    [Serializable]
+    public struct DLuiEvent
+    {
+        [Header("UI")] public CharacterSide characterShow;
 
-        [Dropdown(DropdownType.Expression)] public string selectedExpression;
+        [Header("RightCharacter")] [Dropdown(DropdownType.Actor)]
+        public string selectedActorRight;
 
-        public AudioClip voiceClip;
+        [Dropdown(DropdownType.Expression)] public string selectedExpressionRight;
 
+        [Header("LeftCharacter")] [Dropdown(DropdownType.Actor)]
+        public string selectedActorLeft;
+
+        [Dropdown(DropdownType.Expression)] public string selectedExpressionLeft;
+
+        public bool animateWhileSepeak;
+    }
+
+    [Serializable]
+    public struct DLActionEvent
+    {
         [Header("ActionEvent")] public bool isActionEvent;
-        public CameraAction cameraAction;
+        public List<CameraEffect> cameraEffects;
         public List<ActorInScenePosition> actorInScenePosition;
         public UnityEngine.Events.UnityEvent onDialogueEvent;
-
-        [Header("Node Links")] public List<DialogueChoice> choices = new List<DialogueChoice>();
-        public int nextNodeID;
-
-        public bool HasChoices => choices.Count > 0;
     }
+
 
     [Serializable]
     public struct ActorInScenePosition
     {
-        [Dropdown(DropdownType.Actor)] public string selectedActor;
+        public bool useInScenePosition;
         public GameObject actorGameObject;
+        public float moveSpeed;
         public Vector3 actorStartPosition;
         public Vector3 actorEndPosition;
+    }
+
+    [Serializable]
+    public struct CameraEffect
+    {
+        public CameraAction cameraAction;
+        public float effectDuration;
+        public float effectAmount;
+        public Color effectColor;
+        public Transform target;
+        public bool isLoop;
     }
 
     [Serializable]

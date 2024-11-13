@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿#if UNITY_EDITOR
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace FloxyDev
+namespace FloxyDev.DialogueSystem
 {
     public class DialogueSettingsEditor : EditorWindow
     {
@@ -12,7 +13,7 @@ namespace FloxyDev
         private SerializedProperty _expressionData;
 
         private Vector2 _scrollPos;
-        private int _selectedTab = 0;
+        private int _selectedTab;
 
         // Dictionary to store foldout states for expressions and expression per actor
         private readonly Dictionary<int, bool> _expressionFoldouts = new Dictionary<int, bool>();
@@ -123,6 +124,7 @@ namespace FloxyDev
             {
                 _actorNames.arraySize++;
             }
+
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.Space();
@@ -188,7 +190,7 @@ namespace FloxyDev
                         }
                         //}
                     }
-                    
+
                     EditorGUILayout.Space(10);
 
                     // Button to add a new Actor Expression
@@ -250,7 +252,7 @@ namespace FloxyDev
         {
             serializedObject.Update();
 
-            DialogueSettings settings = (DialogueSettings)target;
+            //DialogueSettings settings = (DialogueSettings)target;
             if (GUILayout.Button("Refresh Data"))
             {
                 // Custom logic to refresh your data
@@ -259,11 +261,8 @@ namespace FloxyDev
 
             // Draw Actor Names
             EditorGUILayout.PropertyField(serializedObject.FindProperty("actorNames"), true);
-
-            // Draw Expression Data with Refresh Button
-            SerializedProperty expressionDataProp = serializedObject.FindProperty("expressionData");
-
-            EditorGUILayout.PropertyField(expressionDataProp, new GUIContent("Expression Data"), true);
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("expressionData"), true);
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("cameraModifier"), true);
 
             EditorGUILayout.LabelField("FloxyDev", EditorStyles.centeredGreyMiniLabel);
 
@@ -350,8 +349,24 @@ namespace FloxyDev
             EditorGUILayout.PropertyField(_choices, new GUIContent("Choices"), true);
             EditorGUILayout.PropertyField(_nextNodeID);
 
+            EditorGUILayout.LabelField("FloxyDev", EditorStyles.centeredGreyMiniLabel);
+
             // Apply the modified properties
             serializedObject.ApplyModifiedProperties();
         }
     }
+
+    [CustomEditor(typeof(DialogueActivator))]
+    public class DialogueActivatorEditors : Editor
+    {
+        public override void OnInspectorGUI()
+        {
+            serializedObject.Update();
+            //DialogueActivator settings = (DialogueActivator)target;
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("dialogueLines"), true);
+            EditorGUILayout.LabelField("FloxyDev", EditorStyles.centeredGreyMiniLabel);
+            serializedObject.ApplyModifiedProperties();
+        }
+    }
 }
+#endif

@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
+﻿using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace FloxyDev
+namespace FloxyDev.DialogueSystem
 {
     public enum DropdownType
     {
@@ -22,9 +19,9 @@ namespace FloxyDev
     [CustomPropertyDrawer(typeof(DropdownAttribute))]
     public class OptimizedDropdownDrawer : PropertyDrawer
     {
-        private static string[] cachedActorNames;
-        private static string[] cachedExpressionNames;
-        private static bool cacheNeedsRefresh = true;
+        private static string[] _cachedActorNames;
+        private static string[] _cachedExpressionNames;
+        private static bool _cacheNeedsRefresh = true;
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
@@ -42,34 +39,34 @@ namespace FloxyDev
 
         public static void RefreshCache()
         {
-            cacheNeedsRefresh = true;
-            cachedActorNames = FetchDataFromAssets("actorNames");
-            cachedExpressionNames = FetchDataFromAssets("expressionNames");
+            _cacheNeedsRefresh = true;
+            _cachedActorNames = FetchDataFromAssets("actorNames");
+            _cachedExpressionNames = FetchDataFromAssets("expressionNames");
         }
 
         private static string[] GetActorNames()
         {
-            if (cacheNeedsRefresh || cachedActorNames == null)
+            if (_cacheNeedsRefresh || _cachedActorNames == null)
             {
-                cachedActorNames = FetchDataFromAssets("actorNames");
+                _cachedActorNames = FetchDataFromAssets("actorNames");
             }
 
-            return cachedActorNames;
+            return _cachedActorNames;
         }
 
         private static string[] GetExpressionNames()
         {
-            if (cacheNeedsRefresh || cachedExpressionNames == null)
+            if (_cacheNeedsRefresh || _cachedExpressionNames == null)
             {
-                cachedExpressionNames = FetchDataFromAssets("expressionNames");
+                _cachedExpressionNames = FetchDataFromAssets("expressionNames");
             }
 
-            return cachedExpressionNames;
+            return _cachedExpressionNames;
         }
 
         private static string[] FetchDataFromAssets(string field)
         {
-            cacheNeedsRefresh = false;
+            _cacheNeedsRefresh = false;
             List<string> names = new List<string>();
 
             var guids = AssetDatabase.FindAssets("t:DialogueSettings");
@@ -104,12 +101,22 @@ namespace FloxyDev
         None,
         Shake,
         Flash,
-        DipInBlack,
-        DipInWhite,
-        DipOutBlack,
-        DipOutWhite,
-        OpenEye,
-        CloseEye
+        ZoomIn,
+        ZoomOut,
+        FadeIn,
+        FadeOut
+    }
+
+    #endregion
+
+    #region CharacterSide
+
+    public enum CharacterSide
+    {
+        None,
+        Right,
+        Left,
+        Both
     }
 
     #endregion
